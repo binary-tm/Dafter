@@ -89,6 +89,10 @@ class customer extends Controller
                  'detels' => $request->detels,
                  'id_user' => $request->id_user,
                  'mone_cunt' => $request->mone_cunt,
+                 'D' => $request->d,
+                 'M' => $request->m,
+                 'Y' => $request->y,
+
 
              
                  
@@ -139,6 +143,9 @@ class customer extends Controller
                  'detels' => $request->detels,
                  'id_user' => $request->id_user,
                  'mone_proses' => $request->mone_proses,
+                 'D' => $request->d,
+                 'M' => $request->m,
+                 'Y' => $request->y,
 
              
                  
@@ -412,6 +419,7 @@ $delet_user='';
     {
 
 
+        // return $request->id_user;
 
         return response()->json(['data' =>  ResourcesCustomer::collection(ModelsCustomer::where('id_user', $request->id_user)->latest()->get())  ], 200);
 

@@ -23,7 +23,10 @@ class monResorse extends JsonResource
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
             'id_user' => $this->id_user,
-           
+            'D' => $this->d??'',
+            'M' => $this->m??'',
+            'Y' => $this->y??'',
+
             
 
           

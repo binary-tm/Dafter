@@ -14,6 +14,9 @@ class money_customer extends Model
         'mone_cunt',
         'id_user',
         'detels',
+        'D',
+        'M',
+        'Y',
      
 
         

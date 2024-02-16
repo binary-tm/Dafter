@@ -14,7 +14,10 @@ class mored_reimburesment extends Model
         'mone_proses',
         'id_user',
         'detels',
-     
+        'D',
+        'M',
+        'Y',
+
 
         
  

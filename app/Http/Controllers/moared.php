@@ -80,6 +80,9 @@ class moared extends Controller
                  'detels' => $request->detels,
                  'id_user' => $request->id_user,
                  'mone_cunt' => $request->mone_cunt,
+                 'D' => $request->d,
+                 'M' => $request->m,
+                 'Y' => $request->y,
 
              
                  
@@ -130,7 +133,9 @@ class moared extends Controller
                  'detels' => $request->detels,
                  'id_user' => $request->id_user,
                  'mone_proses' => $request->mone_proses,
-
+                 'D' => $request->d,
+                 'M' => $request->m,
+                 'Y' => $request->y,
              
                 
              ]);
