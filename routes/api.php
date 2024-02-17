@@ -90,6 +90,8 @@ Route::get('update', function () {
 
 Route::post('regester', [user::class, 'regester'])->name('regester');
 Route::post('login', [user::class, 'login'])->name('login');
+Route::post('notification_id', [user::class, 'set_notification_id'])->name('notification_id');
+
 Route::post('resetpassword', [user::class, 'resetpassword'])->name('resetpassword');
 Route::post('valdatecode', [user::class, 'valdatecode'])->name('valdatecode');
 Route::post('setNewPassword', [user::class, 'setNewPassword'])->name('setNewPassword');
