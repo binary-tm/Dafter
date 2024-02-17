@@ -15,6 +15,7 @@ use App\Models\users;
 use Illuminate\Http\Request;
 use Kreait\Firebase\Factory;
 use App\Mail\sendcoderesetPassword;
+use App\Models\User as ModelsUser;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -28,7 +29,6 @@ class user extends Controller
 
 
     
-
 
         $regestersuccess='';
         $emailexets='';
@@ -55,7 +55,7 @@ class user extends Controller
                  'name' => $request->name,
                  'email' => $request->email,
                  'password_' =>Hash::make( $request->password ),
-             
+                 'notification_id'=>$request->notification_id??null,
                  
                 
              ]);
@@ -119,11 +119,17 @@ class user extends Controller
 
                     if (Hash::check($request->password, $userinfo->password_)) {
        
+                        if(isset($request->notification_id)){
+                            users::where('email',$request->email)->update([
+                                'notification_id'=>$request->notification_id
+                            ]);
+                        }
 
                         $loginsuccess=true;
                         return response()->json(['data' => 
                         userResource::collection(users::where('email', '=', $request->email,)->get()) 
                         , 'stat' => compact('loginsuccess')], 200);
+
 
                     } else {
                         $loginsuccess=false;
@@ -299,46 +305,64 @@ class user extends Controller
 
 
 
-}
+    }
 
 
 
-public function serch_mor(Request $request)
-{
+    public function serch_mor(Request $request)
+    {
 
-    $serch =$request->serch;
-    $item =$request->item;
-    $id_user = $request->id;
-
-
-      
+        $serch =$request->serch;
+        $item =$request->item;
+        $id_user = $request->id;
 
 
-    switch ($serch) {
-        case 'name':
-          
-
-                  return  customerResorse::collection( moared::where('name', 'LIKE', "%{$item}%")->where('id', '=', "%{$id_user}%")->get());
-
-            break;
+        
 
 
-        case 'phone':
-                
-                return  customerResorse::collection( moared::where('phone', 'LIKE', "%{$item}%")->where('id', '=', "%{$id_user}%")->get());
+        switch ($serch) {
+            case 'name':
+            
 
-
-
+                    return  customerResorse::collection( moared::where('name', 'LIKE', "%{$item}%")->where('id', '=', "%{$id_user}%")->get());
 
                 break;
-          
-
-}
 
 
+            case 'phone':
+                    
+                    return  customerResorse::collection( moared::where('phone', 'LIKE', "%{$item}%")->where('id', '=', "%{$id_user}%")->get());
 
-}
 
+
+
+                    break;
+            
+
+    }
+
+
+
+    }
+
+
+
+
+    public function set_notification_id(Request $request){
+
+      $add=  users::where('id',$request->user_id)->update([
+            'notification_id'=>$request->notification_id
+        ]);
+
+        if(!$add){
+            $AddSuccess=false;
+            return response()->json(['message' => trans('404') , 'stat' => compact('AddSuccess')], 404);
+        }else{
+            return response()->json(['message' => trans('200') , 'stat' => compact('AddSuccess')], 200);
+
+        }
+
+    }
 
 
 }

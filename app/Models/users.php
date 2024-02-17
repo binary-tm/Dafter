@@ -13,7 +13,7 @@ class users extends Model
         'name',
         'email',
         'password_',
-
+        'notification_id'
 
 
  

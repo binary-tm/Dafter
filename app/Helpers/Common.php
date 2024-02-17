@@ -24,7 +24,7 @@ class Common{
     public static function send_firebase_notification($tokens, $title, $body,$icon = '',$data = [],$action = '', $type = '', $id = '', $notification_type = 'user_notification')
     {
 
-                $api_access_key = 'AAAA_2DK7TA:APA91bGRbKZ0vPTrRJRTg41TF-aNzUT3XGCTzEvX24w7E15_YO-jOznkU3JFoRkfssR1ZD4PzC2-YGEGbaj6KfM48qvTKHYiZTlPslJVLQItsUvloPhOgW2rlsm0VMbhXyoT-lVVFRCz';
+                $api_access_key = 'AIzaSyC6dNNihPqf88CbxscjYTCOxKCkIUVWb8M';
 
                 $notification = [
                     'title' => $title,
@@ -51,7 +51,7 @@ class Common{
                 if (isset($data['image']) && !empty($data['image'])) {
                     $payload['notification']['image'] = $data['image'];
                 } else {
-                    // $payload['notification']['image'] = 'https://kita.rstar-soft.com/storage/images/kitaimg.jpg';
+                    // $payload['notification']['image'] = '';
                 }
 
                 $headers = [

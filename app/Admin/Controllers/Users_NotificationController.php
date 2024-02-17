@@ -4,6 +4,7 @@ namespace App\Admin\Controllers;
 
 use App\Helpers\Common;
 use App\Models\User;
+use App\Models\users;
 use App\Models\users_notification;
 use Encore\Admin\Controllers\AdminController;
 use Encore\Admin\Form;
@@ -65,31 +66,34 @@ class Users_NotificationController extends AdminController
     {
         $form = new Form(new users_notification());
 
-        $ops = [];
-        foreach (User::all() as $user){
-            $ops[$user->id] = $user->id .'  '.' '.$user->name;
-        }
+     
+        $form->select('user_id', trans('user'))->options (function (){
+            $ops = [0=>trans ('all')];
+            foreach (users::all () as $user){
+                $ops[$user->id] = $user->id.'--'.($user->nicename?:$user->name);
+            }
+            return $ops;
+        });
 
-        $form->select('user_id', __('User'))->options ($ops);
         $form->text('title', __('title'));
         $form->text('content', __('content'));
 
-        $form->saving(function (Form $form) {
+        $form->saved(function (Form $form) {
             
-    
+
        
 
             $formData = $form->model()->toArray();
-            $title=$formData['title'];
-            $body=$formData['content'];
+            $title=$formData['title']??'';
+            $body=$formData['content']??'';
             // $img='https://kita.rstar-soft.com/storage/images/kitaimg.jpg';
             $img='';
             
-            if ($formData['img'] !== null) {
-                $img=$formData['img'];
-            }else{
-                $img=null;
-            }
+            // if ($formData['img'] !== null) {
+            //     $img=$formData['img']??'';
+            // }else{
+            //     $img=null;
+            // }
             $userid=$formData['user_id'];
             $icon = ''; // Specify the icon URL if needed
 
@@ -105,7 +109,7 @@ class Users_NotificationController extends AdminController
 
             }
             if(!$userid == 0 ){
-                $tokens = DB::table('users')->where('id', $userid)->value('notification_id');
+                $token = DB::table('users')->where('id', $userid)->value('notification_id');
                 Common::send_firebase_notification($token,$title,$body,$icon,$data);
 
             }

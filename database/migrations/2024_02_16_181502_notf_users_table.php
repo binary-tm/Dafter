@@ -14,8 +14,8 @@ return new class extends Migration
         Schema::create('users_notification', function (Blueprint $table) {
             $table->id();
             $table->bigInteger('user_id');
-            $table->longText('title');
-            $table->longText('content');
+            $table->longText('title')->nullable();
+            $table->longText('content')->nullable();
             $table->rememberToken();
             $table->timestamps();
         });
