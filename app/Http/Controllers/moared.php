@@ -177,14 +177,29 @@ class moared extends Controller
     public function delet_cus(Request $request){  
 
 
-                $id_custmer=$request->id_custmer;
 
-                ModelsMoared::where('id', $id_custmer)->delete();
+        $id_custmer=$request->id_custmer;
+        $delet_user='';
+               $delet_1= money_moared::where('id_custmer', '=', $request->id_custmer,)->delete();
+                 $delet_2=   mored_reimburesment::where('id_custmer', '=', $request->id_custmer,)->delete();
+               
+        $delet=  ModelsMoared::where('id', $id_custmer)->delete();
+        if(!$delet){
+             $delet_user=false;        
+                        return response()->json(['data' => compact('delet_user') ], 200);
+            
+        }
+        $delet_user=true;        
+        return response()->json(['data' => compact('delet_user') ], 200);
 
-                $delet_user=true;        
-                return response()->json(['data' => 
-                ResourcesCustomer::collection(ModelsMoared::where('phone', $request->id_user)->latest()->get()) 
-                ,'stat' => compact('delet_user')], 200);
+                // $id_custmer=$request->id_custmer;
+
+                // ModelsMoared::where('id', $id_custmer)->delete();
+
+                // $delet_user=true;        
+                // return response()->json(['data' => 
+                // ResourcesCustomer::collection(ModelsMoared::where('phone', $request->id_user)->latest()->get()) 
+                // ,'stat' => compact('delet_user')], 200);
                 
                
     }
