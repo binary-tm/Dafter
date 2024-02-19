@@ -11,7 +11,7 @@ use App\Http\Resources\monResorse;
 use App\Http\Resources\riminsResorse;
 
 // use App\Models\cus_reimbursement;
-// use App\Models\customer as ModelsCustomer;
+// use App\Models\customer as money_moared;
 // use App\Models\money_customer;
 // // use Illuminate\Http\Request;
 
@@ -248,54 +248,132 @@ class moared extends Controller
 
         public function edit_cus(Request $request){
 
-            $id_custmer=$request->id_custmer;
+            // $id_custmer=$request->id_custmer;
 
 
-            if ($request->name > 0) {
-                money_moared::where('id', '=', $id_custmer)->update(
-                    [
-                        'name' => $request->name,
-                    ]);
-            }
-
-
-
-            if ($request->date > 0) {
-                money_moared::where('id', '=', $id_custmer)->update(
-                    [
-                        'date_' => $request->date,
-
-                    ]);
-            }
+            // if ($request->name > 0) {
+            //     money_moared::where('id', '=', $id_custmer)->update(
+            //         [
+            //             'name' => $request->name,
+            //         ]);
+            // }
 
 
 
-            if ($request->address > 0) {
-                money_moared::where('id', '=', $id_custmer)->update(
-                    [
-                        'address' => $request->address ,
-                    ]);
-            }
+            // if ($request->date > 0) {
+            //     money_moared::where('id', '=', $id_custmer)->update(
+            //         [
+            //             'date_' => $request->date,
+
+            //         ]);
+            // }
 
 
 
-            if ($request->phone > 0) {
-                money_moared::where('id', '=', $id_custmer)->update(
-                    [
-                        'phone' => $request->phone ,
-                    ]);
-            }
+            // if ($request->address > 0) {
+            //     money_moared::where('id', '=', $id_custmer)->update(
+            //         [
+            //             'address' => $request->address ,
+            //         ]);
+            // }
+
+
+
+            // if ($request->phone > 0) {
+            //     money_moared::where('id', '=', $id_custmer)->update(
+            //         [
+            //             'phone' => $request->phone ,
+            //         ]);
+            // }
 
          
 
 
-            $edit_user=true;        
-            return response()->json(['data' => 
-            ResourcesCustomer::collection(ModelsMoared::where('phone', $request->id_user)->latest()->get()) 
-            ,'stat' => compact('edit_user')], 200);
+            // $edit_user=true;        
+            // return response()->json(['data' => 
+            // ResourcesCustomer::collection(ModelsMoared::where('phone', $request->id_user)->latest()->get()) 
+            // ,'stat' => compact('edit_user')], 200);
             
      
             
+
+            $id_custmer=$request->id_custmer;
+            $regestersuccess='';
+           $phoneExets='';
+           $datadontsave='';
+
+          if ($request->name > 0) {
+              money_moared::where('id', '=', $id_custmer)->update(
+                  [
+                      'name' => $request->name,
+                  ]);
+          }
+
+
+
+          if ($request->date > 0) {
+              money_moared::where('id', '=', $id_custmer)->update(
+                  [
+                      'date_' => $request->date_,
+
+                  ]);
+          }
+
+
+
+          if ($request->address > 0) {
+              money_moared::where('id', '=', $id_custmer)->update(
+                  [
+                      'address' => $request->address ,
+                  ]);
+          }
+
+
+
+          if ($request->phone > 0) {
+              
+              
+        
+
+      $users = money_moared::where('phone', $request->phone)->first();
+
+      # check if email is more than 1
+
+      if( $users){
+          # tell user not to duplicate same email
+          $phoneExets=true;
+          $regestersuccess=false; 
+          $datadontsave=false; 
+
+          return response()->json(['message' => trans('response.failed'),'stat' => compact('phoneExets','regestersuccess','datadontsave')], 444);
+          
+      }
+      
+      
+              money_moared::where('id', '=', $id_custmer)->update(
+                  [
+                      'phone' => $request->phone ,
+                  ]);
+          }
+
+       
+
+
+          // $edit_user=true;        
+          // return response()->json(['data' => 
+          // ResourcesCustomer::collection(money_moared::latest()->get()) 
+          // ,'stat' => compact('edit_user')], 200);
+          
+          
+      $regestersuccess=true; 
+      $phoneExets=false;
+      $datadontsave=false;
+
+      return response()->json(['data' => 
+      ResourcesCustomer::collection(money_moared::where('phone', $request->phone)->latest()->get()) 
+      ,'stat' => compact('regestersuccess','phoneExets','datadontsave')], 200);
+   
+          
 
         }
 
