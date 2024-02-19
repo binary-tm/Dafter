@@ -370,7 +370,7 @@ class moared extends Controller
       $datadontsave=false;
 
       return response()->json(['data' => 
-      ResourcesCustomer::collection(ModelsMoared::where('phone', $request->phone)->latest()->get()) 
+      ResourcesCustomer::collection(ModelsMoared::where('id_user', $request->id_user)->latest()->get()) 
       ,'stat' => compact('regestersuccess','phoneExets','datadontsave')], 200);
    
           
