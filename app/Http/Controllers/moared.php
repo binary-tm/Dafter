@@ -7,6 +7,9 @@ use App\Models\money_moared;
 use App\Models\mored_reimburesment;
 use Illuminate\Http\Request;
 use App\Http\Resources\customer as ResourcesCustomer;
+use App\Http\Resources\monResorse;
+use App\Http\Resources\riminsResorse;
+
 // use App\Models\cus_reimbursement;
 // use App\Models\customer as ModelsCustomer;
 // use App\Models\money_customer;
@@ -372,19 +375,18 @@ class moared extends Controller
         {
     
     
-            // $total_mon=  money_customer::where('id_custmer', '=', $request->id_custmer,)->sum('mone_cunt');
+            $total_mon=  money_moared::where('id_custmer', '=', $request->id_custmer,)->sum('mone_cunt');
         
-            // $reimbursement=  cus_reimbursement::where('id_custmer', '=', $request->id_custmer,)->sum('mone_proses');
+            $reimbursement=  mored_reimburesment::where('id_custmer', '=', $request->id_custmer,)->sum('mone_proses');
             
-            // $the_difference= $total_mon - $reimbursement ;
+            $the_difference= $total_mon - $reimbursement ;
     
-            //  return response()->json([
-            //      'money' =>  monResorse::collection(money_customer::where('id_custmer', $request->id_custmer)->latest()->get()) ,
-            //  'reimbursement' =>  riminsResorse::collection(cus_reimbursement::where('id_custmer', '=', $request->id_custmer)->latest()->get()) ,
-            //  'total' => compact('total_mon','reimbursement','the_difference') ], 200);
+             return response()->json([
+                 'money' =>  monResorse::collection(money_moared::where('id_custmer', $request->id_custmer)->latest()->get()) ,
+             'reimbursement' =>  riminsResorse::collection(mored_reimburesment::where('id_custmer', '=', $request->id_custmer)->latest()->get()) ,
+             'total' => compact('total_mon','reimbursement','the_difference') ], 200);
              
-    
-            return response()->json(['data' =>  ResourcesCustomer::collection(money_moared::where('id_custmer', $request->id_custmer)->latest()->get())  ], 200);
+            // return response()->json(['data' =>  ResourcesCustomer::collection(money_moared::where('id_custmer', $request->id_custmer)->latest()->get())  ], 200);
     
     
         }
