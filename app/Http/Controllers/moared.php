@@ -303,7 +303,7 @@ class moared extends Controller
            $datadontsave='';
 
           if ($request->name > 0) {
-              money_moared::where('id', '=', $id_custmer)->update(
+              ModelsMoared::where('id', '=', $id_custmer)->update(
                   [
                       'name' => $request->name,
                   ]);
@@ -312,7 +312,7 @@ class moared extends Controller
 
 
           if ($request->date > 0) {
-              money_moared::where('id', '=', $id_custmer)->update(
+            ModelsMoared::where('id', '=', $id_custmer)->update(
                   [
                       'date_' => $request->date_,
 
@@ -322,7 +322,7 @@ class moared extends Controller
 
 
           if ($request->address > 0) {
-              money_moared::where('id', '=', $id_custmer)->update(
+            ModelsMoared::where('id', '=', $id_custmer)->update(
                   [
                       'address' => $request->address ,
                   ]);
@@ -330,12 +330,12 @@ class moared extends Controller
 
 
 
-          if ($request->phone > 0) {
+          if (@$request->phone > 0) {
               
               
         
 
-      $users = money_moared::where('phone', $request->phone)->first();
+      $users = ModelsMoared::where('phone', $request->phone)->first();
 
       # check if email is more than 1
 
@@ -350,7 +350,7 @@ class moared extends Controller
       }
       
       
-              money_moared::where('id', '=', $id_custmer)->update(
+      ModelsMoared::where('id', '=', $id_custmer)->update(
                   [
                       'phone' => $request->phone ,
                   ]);
@@ -370,7 +370,7 @@ class moared extends Controller
       $datadontsave=false;
 
       return response()->json(['data' => 
-      ResourcesCustomer::collection(money_moared::where('phone', $request->phone)->latest()->get()) 
+      ResourcesCustomer::collection(ModelsMoared::where('phone', $request->phone)->latest()->get()) 
       ,'stat' => compact('regestersuccess','phoneExets','datadontsave')], 200);
    
           
