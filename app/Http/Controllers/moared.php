@@ -362,7 +362,7 @@ class moared extends Controller
     
     
     
-            return response()->json(['data' =>  ResourcesCustomer::collection(ModelsMoared::where('phone', $request->id_user)->latest()->get())  ], 200);
+            return response()->json(['data' =>  ResourcesCustomer::collection(ModelsMoared::where('id_user', $request->id_user)->latest()->get())  ], 200);
     
     
         }
@@ -372,8 +372,19 @@ class moared extends Controller
         {
     
     
+            // $total_mon=  money_customer::where('id_custmer', '=', $request->id_custmer,)->sum('mone_cunt');
+        
+            // $reimbursement=  cus_reimbursement::where('id_custmer', '=', $request->id_custmer,)->sum('mone_proses');
+            
+            // $the_difference= $total_mon - $reimbursement ;
     
-            return response()->json(['data' =>  ResourcesCustomer::collection(money_moared::where('phone', $request->id_custmer)->latest()->get())  ], 200);
+            //  return response()->json([
+            //      'money' =>  monResorse::collection(money_customer::where('id_custmer', $request->id_custmer)->latest()->get()) ,
+            //  'reimbursement' =>  riminsResorse::collection(cus_reimbursement::where('id_custmer', '=', $request->id_custmer)->latest()->get()) ,
+            //  'total' => compact('total_mon','reimbursement','the_difference') ], 200);
+             
+    
+            return response()->json(['data' =>  ResourcesCustomer::collection(money_moared::where('id_custmer', $request->id_custmer)->latest()->get())  ], 200);
     
     
         }
