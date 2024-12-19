@@ -2,7 +2,7 @@
 
 use App\Http\Controllers\customer;
 use App\Http\Controllers\moared;
-use App\Http\Controllers\user;
+use App\Http\Controllers\UserController;
 use App\Models\users;
 use App\Models\money_customer;
 use App\Http\Resources\customer as ResourcesCustomer;
@@ -86,17 +86,19 @@ Route::get('update', function () {
 });
 
 
+Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
+    return $request->user();
+});
 
+Route::post('regester', [UserController::class, 'regester'])->name('regester');
+Route::post('login', [UserController::class, 'login'])->name('login');
+Route::post('notification_id', [UserController::class, 'set_notification_id'])->name('notification_id');
 
-Route::post('regester', [user::class, 'regester'])->name('regester');
-Route::post('login', [user::class, 'login'])->name('login');
-Route::post('notification_id', [user::class, 'set_notification_id'])->name('notification_id');
-
-Route::post('resetpassword', [user::class, 'resetpassword'])->name('resetpassword');
-Route::post('valdatecode', [user::class, 'valdatecode'])->name('valdatecode');
-Route::post('setNewPassword', [user::class, 'setNewPassword'])->name('setNewPassword');
-Route::get('serch_Customer', [user::class, 'serch_cus'])->name('serch_Customer');
-Route::get('serch_Mored', [user::class, 'serch_mor'])->name('serch_Mored');
+Route::post('resetpassword', [UserController::class, 'resetpassword'])->name('resetpassword');
+Route::post('valdatecode', [UserController::class, 'valdatecode'])->name('valdatecode');
+Route::post('setNewPassword', [UserController::class, 'setNewPassword'])->name('setNewPassword');
+Route::get('serch_Customer', [UserController::class, 'serch_cus'])->name('serch_Customer');
+Route::get('serch_Mored', [UserController::class, 'serch_mor'])->name('serch_Mored');
 
 
 

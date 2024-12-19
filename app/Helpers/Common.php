@@ -74,7 +74,39 @@ class Common{
 
 
     }
+    
+    public static function apiResponse(bool $success, $message, $data = null, $statusCode = null,)
+    {
 
+        if ($success == false && $statusCode == null) {
+            $statusCode = 422;
+        }
+
+        if ($success == true && $statusCode == null) {
+            $statusCode = 200;
+        }
+
+
+        $dataForPaginationCheck = $data;
+
+        if ($data instanceof \Illuminate\Http\Resources\Json\JsonResource) {
+
+            $dataForPaginationCheck = $data->resource;
+        }
+
+
+        return response()->json(
+            [
+                'success'   => $success,
+
+                'message'   => __($message),
+
+                'data'      => ($data instanceof LengthAwarePaginator) ? $data->items(): $data,
+                'paginates' => ($dataForPaginationCheck instanceof LengthAwarePaginator) ? self::paginationData($data) : null,
+            ],
+            $statusCode
+        );
+    }
 
 
 

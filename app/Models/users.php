@@ -4,10 +4,15 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Notifications\Notifiable;
+use Laravel\Sanctum\HasApiTokens;
+
 
 class users extends Model
 {
-    use HasFactory;
+    use HasApiTokens, Notifiable;
+    
+    
     protected $table = 'users';
     protected $fillable = [
         'name',
@@ -18,6 +23,7 @@ class users extends Model
 
  
     ];
+    
 
     public function cust () {
         return $this->hasMany(customer::class,'id_user','id')->orderBy('id', 'desc');
