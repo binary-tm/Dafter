@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class money_moared extends Model
+class money_supplier extends Model
 {
     use HasFactory;
     protected $table = 'money_out_you';

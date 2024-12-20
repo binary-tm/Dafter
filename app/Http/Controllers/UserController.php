@@ -5,17 +5,20 @@ namespace App\Http\Controllers;
 use App\Helpers\Common;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\customerResorse;
+use App\Http\Resources\CustomerResource;
 use App\Http\Resources\stdResorse;
 use App\Http\Resources\userResource;
 
 use App\Models\customer;
-use App\Models\moared;
+use App\Models\money_customer;
+use App\Models\supplier;
 use App\Models\resetpassword;
 use App\Models\std_std;
 use App\Models\users;
 use Illuminate\Http\Request;
 use Kreait\Firebase\Factory;
 use App\Mail\sendcoderesetPassword;
+use App\Models\money_supplier;
 use App\Models\User as ModelsUser;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
@@ -32,7 +35,7 @@ class UserController extends Controller
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:users,email', // Ensure the email is unique
             'password' => 'required|min:6',
-            'notification_id' => 'nullable|string',
+            'notification_id' => 'required|string',
         ]);
         
         $existingUser = users::where('email', $request->email)->first();
@@ -45,17 +48,18 @@ class UserController extends Controller
         $userData = [
             'name' => $request->name,
             'email' => $request->email,
-            'password_' => Hash::make($request->password),
+            'password' => Hash::make($request->password),
             'notification_id' => $request->notification_id ?? null,
         ];
     
         $newUser = users::create($userData);
-    
+        $newUser['token'] = $newUser->createToken('dafter')->plainTextToken;
+
         if (!$newUser) {
         
             return Common::apiResponse(0,__('validation.register_failed'),  $regestersuccess = 0 ,500);
         }
-        return Common::apiResponse(1,__('validation.regestersuccess'),  new userResource($newUser) ,500);
+        return Common::apiResponse(1,__('validation.regestersuccess'),  new userResource($newUser) ,200);
 
     }
 
@@ -74,10 +78,11 @@ class UserController extends Controller
 
         }
 
-        if (Hash::check($request->password, $user->password_)) {
+        if (Hash::check($request->password, $user->password)) {
             if ($request->filled('notification_id')) {
                 $user->update(['notification_id' => $request->notification_id]);
             }
+            $user['token'] = $user->createToken('dafter')->plainTextToken;
             return Common::apiResponse(1,__('validation.login_success'), new UserResource($user),200);
         }
         return Common::apiResponse(0,__('validation.login_failed'), null,404);
@@ -104,9 +109,9 @@ class UserController extends Controller
         
             if ($resetPasswordData) {
                 $email = $request->email;
-                Mail::to($email)->send(new SendCodeResetPassword($email, $token));
+                // Mail::to($email)->send(new SendCodeResetPassword($email, $token));
                 $data=[ 'success' => true,'registered' => true, 'email_exists' => true];
-                return Common::apiResponse(1, __('validation.masseg_send_code'), null, 200);
+                return Common::apiResponse(1, __('validation.masseg_send_code'), $data, 200);
 
             }
         
@@ -170,58 +175,6 @@ class UserController extends Controller
     }
 
 
-
-
-    public function serch_cus(Request $request)
-    {
-
-        $request->validate([   
-            'item' => 'required|string', // Ensure the search item is provided
-            'id' => 'required|exists:users,id', // Validate that the user ID exists
-        ]);
-        
-        $item = $request->item;
-        $userId = $request->id;
-    
-        $customers = Customer::where(function ($query) use ($item) {
-                $query->where('name', 'LIKE', "%{$item}%")
-                      ->orWhere('phone', 'LIKE', "%{$item}%");
-            })
-            ->where('id', $userId)
-            ->get();
-        return Common::apiResponse(1, __('message.success'), customerResourse::collection($customers), 200);
-              
-    }
-
-
-
-    public function serch_mor(Request $request)
-    {
-
-        $request->validate([
-            'item' => 'required|string', // Ensure the search item is provided
-            'id' => 'required|exists:users,id', // Validate that the user ID exists
-        ]);
-        
-        $item = $request->item;
-        $id_user = $request->id;
-    
-        $customers = moared::where(function ($query) use ($item) {
-                $query->where('name', 'LIKE', "%{$item}%")
-                      ->orWhere('phone', 'LIKE', "%{$item}%");
-            })
-            ->where('id', $id_user) 
-            ->get();
-    
-        return Common::apiResponse(1, __('message.success'), customerResorse::collection($customers), 200);
-
-
-
-    }
-
-
-
-
     public function set_notification_id(Request $request){
 
       $add=  users::where('id',$request->user_id)->update([
@@ -237,6 +190,20 @@ class UserController extends Controller
         }
 
     }
+
+
+    public function transactions(Request $request){
+
+         $id_user=auth()->user()->id;
+         $total_customer=customer::where('id_user',$id_user)->count();
+         $total_supplier=supplier::where('id_user',$id_user)->count();
+         $total_money_supplier=money_supplier::where('id_user',$id_user)->sum('mone_cunt');
+         $total_money_customer=money_customer::where('id_user',$id_user)->sum('mone_cunt');
+
+         dd($total_customer,$total_supplier,$total_money_customer,$total_money_supplier );
+    }
+
+    
 
 
 }

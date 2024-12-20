@@ -14,9 +14,6 @@ class cus_reimbursement extends Model
         'mone_proses',
         'id_user',
         'detels',
-        'D',
-        'M',
-        'Y',
 
         
  

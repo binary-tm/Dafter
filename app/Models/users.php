@@ -17,7 +17,7 @@ class users extends Model
     protected $fillable = [
         'name',
         'email',
-        'password_',
+        'password',
         'notification_id'
 
 
