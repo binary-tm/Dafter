@@ -40,7 +40,10 @@ class customer extends Model
         return $this->belongsTo(cus_reimbursement::class,'id_custmer','id')->orderBy('id', 'desc');;
     }
 
- 
+    public function transactions()
+    {
+        return $this->hasMany(Transaction::class, 'id_custmer'); // Assuming 'customer_id' is the foreign key in transactions table
+    }
 
 
 

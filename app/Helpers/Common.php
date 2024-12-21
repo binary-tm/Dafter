@@ -1,7 +1,9 @@
 <?php
 namespace App\Helpers;
 
+use App\Models\Transaction;
 use App\Models\User;
+use Illuminate\Pagination\LengthAwarePaginator;
 
 class Common{
 
@@ -108,6 +110,33 @@ class Common{
         );
     }
 
+    public static  function paginationData($data)
+    {
+        $result['meta'] =  [
+            'current_page'  => $data->currentPage(),
+            'from'          => $data->firstItem(),
+            'last_page'     => $data->lastPage(),
+            'path'          => $data->path(),
+            'per_page'      => $data->perPage(),
+            'to'            => $data->lastItem(),
+            'total'         => $data->total(),
+        ];
 
+        $result['links'] = [
+            'first' => $data->url(1),
+            'last'  => $data->url($data->lastPage()),
+            'prev'  => $data->previousPageUrl(),
+            'next'  => $data->nextPageUrl(),
+        ];
+
+        return $result;
+    }
+
+
+    public static function transaction($data){
+        $transaction = Transaction::create($data);
+        $x = ($transaction) ? true : false ; 
+        return $x;
+    }
 
 }

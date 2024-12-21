@@ -20,4 +20,9 @@ class supplier extends Model
 
  
     ];
+
+    public function transactions()
+    {
+        return $this->hasMany(Transaction::class, 'id_supplier'); // Assuming 'supplier_id' is the foreign key in transactions table
+    }
 }

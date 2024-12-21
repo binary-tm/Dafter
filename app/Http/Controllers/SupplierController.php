@@ -41,6 +41,15 @@ class SupplierController extends Controller
         $data['mone_cunt'] =request('money');
         $data['id_custmer'] =request('id_supplier');
         $money = money_supplier::create($data);
+
+        $data['type']='supplier_money';
+        $data['amount']=$data['money'];
+        $data['transactions_id']=$money->id;
+       $transaction= Common::transaction($data);
+       if($transaction == false) {
+         return Common::apiResponse(0, __('message.transaction_field'), null ,500);
+        }
+
         return Common::apiResponse(1, __('message.success'), new moneyResource($money), 200);
     }
 
@@ -55,6 +64,15 @@ class SupplierController extends Controller
         $data['mone_proses'] =request('money');
         $data['id_custmer'] =request('id_supplier');
         $reimbursement = mored_reimburesment::create($data);
+
+        $data['type']='supplier_reimbursement';
+        $data['amount']=$data['money'];
+        $data['transactions_id']=$reimbursement->id;
+       $transaction= Common::transaction($data);
+       if($transaction == false) {
+         return Common::apiResponse(0, __('message.transaction_field'), null ,500);
+        }
+
         return Common::apiResponse(1, __('message.success'), new ReimbursementResource($reimbursement), 200);
 
     }

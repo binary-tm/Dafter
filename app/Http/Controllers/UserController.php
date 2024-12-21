@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Resources\customerResorse;
 use App\Http\Resources\CustomerResource;
 use App\Http\Resources\stdResorse;
+use App\Http\Resources\TransactionResource;
 use App\Http\Resources\userResource;
 
 use App\Models\customer;
@@ -18,7 +19,9 @@ use App\Models\users;
 use Illuminate\Http\Request;
 use Kreait\Firebase\Factory;
 use App\Mail\sendcoderesetPassword;
+use App\Models\cus_reimbursement;
 use App\Models\money_supplier;
+use App\Models\Transaction;
 use App\Models\User as ModelsUser;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
@@ -200,7 +203,45 @@ class UserController extends Controller
          $total_money_supplier=money_supplier::where('id_user',$id_user)->sum('mone_cunt');
          $total_money_customer=money_customer::where('id_user',$id_user)->sum('mone_cunt');
 
-         dd($total_customer,$total_supplier,$total_money_customer,$total_money_supplier );
+         $transactions = Transaction::with(['supplier', 'customer'])
+         ->where('id_user', $id_user)
+         ->where(function($query) {
+             $query->has('supplier')
+                   ->orHas('customer');
+         })
+         ->latest()
+         ->take(10) 
+        ->get();
+        return Common::apiResponse(1, __('validation.success'), [
+            'total_customers' => $total_customer, 
+            'total_suppliers' => $total_supplier,   
+            'total_money_suppliers' => $total_money_supplier, 
+            'total_money_customers' => $total_money_customer, 
+            'data' => TransactionResource::collection($transactions) 
+        ], 200);
+
+
+ //  $transactions = Transaction::where('id_user', $id_user)->latest()->paginate(10) ;
+        //   $dats=[]; 
+        //  switch ($transactions->type) {
+        //     case 'customer_reimbursement':
+        //                $data+= cus_reimbursement::with('customer')->where('id' ,$transactions->transactions_id)->select('');
+        //         break;
+        //     case 'customer_money':
+        //         # code...
+        //         break;
+        //     case 'supplier_reimbursement':
+        //         # code...
+        //         break; 
+        //     case 'supplier_money':
+        //         # code...
+        //         break;    
+
+
+        //     default:
+        //         # code...
+        //         break;
+        //  }
     }
 
     
