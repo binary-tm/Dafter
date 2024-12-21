@@ -21,7 +21,7 @@ return new class extends Migration
             $table->bigInteger('transactions_id'); // e.g., 'credit' or 'debit'
             $table->timestamps(); // timestamps for created_at and updated_at
             $table->foreign('id_user')->references('id')->on('users')->onDelete('cascade');
-            $table->foreign('id_supplier')->references('id')->on('moared')->onDelete('cascade');
+            $table->foreign('id_supplier')->references('id')->on('supplier')->onDelete('cascade');
             $table->foreign('id_customer')->references('id')->on('castomer')->onDelete('cascade');
         });
     }

@@ -14,9 +14,9 @@ return new class extends Migration
         Schema::create('money_for_you', function (Blueprint $table) {
             $table->id();
             $table->text('mone_cunt')->nullable();
-            $table->bigInteger('id_custmer')->nullable();
+            $table->bigInteger('id_customer')->nullable();
             $table->bigInteger('id_user')->nullable();
-            $table->text('detels')->nullable();
+            $table->text('details')->nullable();
             $table->timestamps();
         });
     }

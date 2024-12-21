@@ -10,10 +10,10 @@ class mored_reimburesment extends Model
     use HasFactory;
     protected $table = 'maney_prosess_money_out_you';
     protected $fillable = [
-        'id_custmer',
+        'id_customer',
         'mone_proses',
         'id_user',
-        'detels',
+        'details',
         'D',
         'M',
         'Y',

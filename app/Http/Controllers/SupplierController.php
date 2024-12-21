@@ -33,13 +33,13 @@ class SupplierController extends Controller
     {
         $request->validate([
             'id_supplier' => 'required|integer',
-            'detels' => 'required|string',
+            'details' => 'required|string',
             'money' => 'required|numeric',
         ]);
         $data= $request->all();
         $data['id_user'] =auth()->user()->id;
         $data['mone_cunt'] =request('money');
-        $data['id_custmer'] =request('id_supplier');
+        $data['id_customer'] =request('id_supplier');
         $money = money_supplier::create($data);
 
         $data['type']='supplier_money';
@@ -57,12 +57,12 @@ class SupplierController extends Controller
     {
         $request->validate([
             'id_supplier' => 'required|integer',
-            'detels' => 'required|string',
+            'details' => 'required|string',
         ]);
         $data= $request->all();
         $data['id_user'] =auth()->user()->id;
         $data['mone_proses'] =request('money');
-        $data['id_custmer'] =request('id_supplier');
+        $data['id_customer'] =request('id_supplier');
         $reimbursement = mored_reimburesment::create($data);
 
         $data['type']='supplier_reimbursement';
@@ -175,11 +175,11 @@ class SupplierController extends Controller
                 }
 
                 static function money($id_supplier)  {
-                    $total_mon = money_supplier::where('id_custmer', $id_supplier)->sum('mone_cunt');
-                    $reimbursement = mored_reimburesment::where('id_custmer', $id_supplier)->sum('mone_proses');
+                    $total_mon = money_supplier::where('id_customer', $id_supplier)->sum('mone_cunt');
+                    $reimbursement = mored_reimburesment::where('id_customer', $id_supplier)->sum('mone_proses');
                     $the_difference = $total_mon - $reimbursement;
-                    $data = ['total_money'=> moneyResource::collection(money_supplier::where('id_custmer', $id_supplier)->latest()->get()),
-                            'tottal_reimbursement'=> ReimbursementResource::collection(mored_reimburesment::where('id_custmer', $id_supplier)->latest()->get()),
+                    $data = ['total_money'=> moneyResource::collection(money_supplier::where('id_customer', $id_supplier)->latest()->get()),
+                            'tottal_reimbursement'=> ReimbursementResource::collection(mored_reimburesment::where('id_customer', $id_supplier)->latest()->get()),
                             'total' => compact('total_mon', 'reimbursement', 'the_difference')];
                     
                             return $data;

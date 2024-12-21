@@ -10,10 +10,10 @@ class cus_reimbursement extends Model
     use HasFactory;
     protected $table = 'maney_prosess_money_for_you';
     protected $fillable = [
-        'id_custmer',
+        'id_customer',
         'mone_proses',
         'id_user',
-        'detels',
+        'details',
 
         
  

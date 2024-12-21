@@ -14,10 +14,10 @@ return new class extends Migration
         Schema::create('maney_prosess_money_for_you', function (Blueprint $table) {
             $table->id();
             $table->text('mone_proses')->nullable();
-            $table->bigInteger('id_custmer')->nullable();
+            $table->bigInteger('id_customer')->nullable();
             $table->bigInteger('id_money')->nullable();
             $table->bigInteger('id_user')->nullable();
-            $table->text('detels')->nullable();
+            $table->text('details')->nullable();
             $table->timestamps();
         });
     }

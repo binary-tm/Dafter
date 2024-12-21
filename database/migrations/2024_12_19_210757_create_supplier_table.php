@@ -11,10 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('moared', function (Blueprint $table) {
+        Schema::create('supplier', function (Blueprint $table) {
             $table->id();
             $table->string('name')->nullable();
-            $table->text('date_')->nullable();
+            $table->text('date')->nullable();
             $table->text('address')->nullable();
             $table->text('phone')->nullable();
             $table->bigInteger('id_user')->nullable();
@@ -27,6 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('moared');
+        Schema::dropIfExists('supplier');
     }
 };

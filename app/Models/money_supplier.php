@@ -10,10 +10,10 @@ class money_supplier extends Model
     use HasFactory;
     protected $table = 'money_out_you';
     protected $fillable = [
-        'id_custmer',
+        'id_customer',
         'mone_cunt',
         'id_user',
-        'detels',
+        'details',
         'D',
         'M',
         'Y',

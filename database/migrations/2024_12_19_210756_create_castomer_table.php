@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('castomer', function (Blueprint $table) {
             $table->id();
             $table->string('name')->nullable();
-            $table->text('date_')->nullable();
+            $table->text('date')->nullable();
             $table->text('address')->nullable();
             $table->text('phone')->nullable();
             $table->bigInteger('id_user')->nullable();
