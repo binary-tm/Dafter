@@ -49,8 +49,9 @@ class CustomerController extends Controller
              return Common::apiResponse(0, __('message.transaction_field'), null ,500);
             }
         }
-        
-        return Common::apiResponse(1, __('message.success'), new moneyResource($money), 200);
+        $data=$this->money($request->id_customer);
+        return   Common::apiResponse(1, __('message.success'),  $data ,200);
+
     }
 
     public function reimbursement(Request $request)
@@ -62,7 +63,7 @@ class CustomerController extends Controller
         $data= $request->all();
         $data['id_user'] =auth()->user()->id;
         $data['mone_proses'] =request('money');
-        $data['id_customer']=$data['id_customer'];
+        // $data['id_customer']=$data['id_customer'];
 
         $reimbursement = cus_reimbursement::create($data);
             $data['type']='customer_reimbursement';
@@ -72,7 +73,9 @@ class CustomerController extends Controller
             if($transaction == false) {
               return Common::apiResponse(0, __('message.transaction_field'), null ,500);
              }
-        return Common::apiResponse(1, __('message.success'), new ReimbursementResource($reimbursement), 200);
+     
+        $data=$this->money($request->id_customer);
+        return   Common::apiResponse(1, __('message.success'),  $data ,200);
 
     }
 

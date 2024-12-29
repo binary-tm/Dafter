@@ -12,6 +12,7 @@ use App\Http\Resources\userResource;
 
 use App\Models\customer;
 use App\Models\money_customer;
+use App\Models\mored_reimburesment;
 use App\Models\supplier;
 use App\Models\resetpassword;
 use App\Models\std_std;
@@ -44,7 +45,7 @@ class UserController extends Controller
         $existingUser = users::where('email', $request->email)->first();
     
         if ($existingUser) {
-            return Common::apiResponse(0,__('validation.emailexists'),  $emailexists =1 ,404);
+            return Common::apiResponse(0,__('mass.emailexists'),  $emailexists =1 ,404);
          
         }
     
@@ -60,9 +61,9 @@ class UserController extends Controller
 
         if (!$newUser) {
         
-            return Common::apiResponse(0,__('validation.register_failed'),  $regestersuccess = 0 ,500);
+            return Common::apiResponse(0,__('mass.register_failed'),  $regestersuccess = 0 ,500);
         }
-        return Common::apiResponse(1,__('validation.regestersuccess'),  new userResource($newUser) ,200);
+        return Common::apiResponse(1,__('mass.regestersuccess'),  new userResource($newUser) ,200);
 
     }
 
@@ -77,7 +78,7 @@ class UserController extends Controller
         $user = Users::where('email', $request->email)->first();
 
         if (!$user) {
-            return Common::apiResponse(0,__('validation.user_not_exit'), null,404);
+            return Common::apiResponse(0,__('mass.user_not_exit'), null,404);
 
         }
 
@@ -86,9 +87,9 @@ class UserController extends Controller
                 $user->update(['notification_id' => $request->notification_id]);
             }
             $user['token'] = $user->createToken('dafter')->plainTextToken;
-            return Common::apiResponse(1,__('validation.login_success'), new UserResource($user),200);
+            return Common::apiResponse(1,__('mass.login_success'), new UserResource($user),200);
         }
-        return Common::apiResponse(0,__('validation.login_failed'), null,404);
+        return Common::apiResponse(0,__('mass.login_failed'), null,404);
 
     }
 
@@ -101,7 +102,7 @@ class UserController extends Controller
             ]);
             $user = Users::where('email', $request->email)->first();
             if (!$user) {
-                return Common::apiResponse(0, __('validation.login_failed'), null, 404);
+                return Common::apiResponse(0, __('mass.failed'), null, 404);
             }
         
             $token = rand(1000, 9999);
@@ -113,12 +114,14 @@ class UserController extends Controller
             if ($resetPasswordData) {
                 $email = $request->email;
                 // Mail::to($email)->send(new SendCodeResetPassword($email, $token));
+                Mail::to($email)->send(new sendcoderesetPassword($email, $token));
+
                 $data=[ 'success' => true,'registered' => true, 'email_exists' => true];
-                return Common::apiResponse(1, __('validation.masseg_send_code'), $data, 200);
+                return Common::apiResponse(1, __('mass.masseg_send_code'), $data, 200);
 
             }
         
-            return Common::apiResponse(0, __('validation.unexpected_error'), null, 500);
+            return Common::apiResponse(0, __('mass.unexpected_error'), null, 500);
         }
 
 
@@ -136,7 +139,7 @@ class UserController extends Controller
         $userInfo = Users::where('email', $request->email)->first();
     
         if (!$userInfo) {
-            return Common::apiResponse(0, __('validation.user_not_found'), null, 404);
+            return Common::apiResponse(0, __('mass.user_not_found'), null, 404);
         }
     
         $userInfoReset = ResetPassword::where('id_user', $userInfo->id)->first();
@@ -145,12 +148,15 @@ class UserController extends Controller
             return Common::apiResponse(0, __(key: 'validation.reset_code_not_found'), null, 404);
         }
         if (Hash::check($request->code, $userInfoReset->code_)) {
-            return response()->json([
-                'data' => UserResource::collection($userInfo),
-                'stat' => ['codeExists' => true],
-            ], 200);
+            // return response()->json([
+            //     'data' => UserResource::collection($userInfo),
+            //     'stat' => ['codeExists' => true],
+            // ], 200);
+
+            return Common::apiResponse(1, __(key: ''), $userInfo, 200);
+
         }
-        return Common::apiResponse(0, __('validation.invalid_reset_code'), null, 404);
+        return Common::apiResponse(0, __('mass.invalid_reset_code'), null, 404);
 
 
  
@@ -170,10 +176,10 @@ class UserController extends Controller
         $userInfo = Users::find($request->id);
     
         if (!$userInfo) {
-            return Common::apiResponse(0, __('validation.user_not_found'), null, 404);
+            return Common::apiResponse(0, __('mass.user_not_found'), null, 404);
         }
         $userInfo->update(['password_' => Hash::make($request->password)]); // Use Hash::make for security
-        return Common::apiResponse(0, __('validation.success'), UserResource::collection($userInfo), 200);
+        return Common::apiResponse(0, __('mass.success'), UserResource::collection($userInfo), 200);
 
     }
 
@@ -212,7 +218,30 @@ class UserController extends Controller
          ->latest()
          ->take(10) 
         ->get();
-        return Common::apiResponse(1, __('validation.success'), [
+
+
+        foreach ($transactions as $value) {
+            switch ($value->type) {
+                case 'supplier_money':
+                    $value->trans_data = money_supplier::find($value->transactions_id);
+                //  dd( $value->transactions_id);
+                    break;
+                case 'supplier_reimbursement':
+                    $value->trans_data = mored_reimburesment::find($value->transactions_id);
+                    break;
+                case 'customer_money':
+                    $value->trans_data = money_customer::find($value->transactions_id);
+                    break;
+                case 'customer_reimbursement':
+                    $value->trans_data = cus_reimbursement::find($value->transactions_id);
+                    break;
+                default:
+                    $value->trans_data = null; // Use null instead of an empty string if there's no data
+                    break;
+            }
+        }
+       
+        return Common::apiResponse(1, __('mass.success'), [
             'total_customers' => $total_customer, 
             'total_suppliers' => $total_supplier,   
             'total_money_suppliers' => $total_money_supplier, 
@@ -220,28 +249,6 @@ class UserController extends Controller
             'data' => TransactionResource::collection($transactions) 
         ], 200);
 
-
- //  $transactions = Transaction::where('id_user', $id_user)->latest()->paginate(10) ;
-        //   $dats=[]; 
-        //  switch ($transactions->type) {
-        //     case 'customer_reimbursement':
-        //                $data+= cus_reimbursement::with('customer')->where('id' ,$transactions->transactions_id)->select('');
-        //         break;
-        //     case 'customer_money':
-        //         # code...
-        //         break;
-        //     case 'supplier_reimbursement':
-        //         # code...
-        //         break; 
-        //     case 'supplier_money':
-        //         # code...
-        //         break;    
-
-
-        //     default:
-        //         # code...
-        //         break;
-        //  }
     }
 
     
