@@ -78,7 +78,7 @@ Route::get('update', function () {
         Route::post('notification_id', [UserController::class, 'set_notification_id'])->name('notification_id');
         Route::post('reset-password', [UserController::class, 'resetpassword'])->name('resetpassword');
         Route::post('valdate-code', [UserController::class, 'valdatecode'])->name('valdatecode');
-        Route::post('setNewPassword', [UserController::class, 'setNewPassword'])->name('setNewPassword');
+        Route::post('set-new-password', [UserController::class, 'setNewPassword'])->name('setNewPassword');
 Route::middleware('auth:sanctum')->group(function () {
 
     
