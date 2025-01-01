@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Resources\customerResorse;
+use App\Mail\sendcoderesetPassword;
 use Illuminate\Support\Facades\Route;
 use App\Models\users;
 use App\Models\customer as ModelsCustomer;
@@ -18,8 +19,25 @@ use Illuminate\Http\Request;
 */
 
 Route::get('/', function () {
-    return view('welcome');
+    // return view('welcome');
+    $email = 'ahmed114747ed@gmail.com';
+    $token = 5646;
+    
+    try {
+        // Send the email
+        Mail::to($email)->send(new sendcoderesetPassword($email, $token));
+        return response()->json([
+            'message' => 'Email sent successfully!',
+        ], 200);
+    } catch (Exception $e) {
+        // Log the error and return an error response
+        \Log::error('Email sending failed: ' . $e->getMessage());
+        return response()->json([
+            'error' => 'Failed to send email. Please try again later.',
+        ], 500);
+}
 });
+
 
 
 
